@@ -82,6 +82,8 @@ async function mouseEnterHandler(
       const html = p.parseFromString(contents, "text/html")
       normalizeRelativeURLs(html, targetUrl)
       const elts = [...html.getElementsByClassName("popover-hint")]
+      // list all the elements in the popover on the console
+      console.log(elts)
       if (elts.length === 0) return
 
       elts.forEach((elt) => popoverInner.appendChild(elt))

@@ -8,15 +8,15 @@ import * as Plugin from "./quartz/plugins"
  */
 const config: QuartzConfig = {
   configuration: {
-    pageTitle: "🪴 Quartz 4.0",
-    pageTitleSuffix: "",
+    pageTitle: "S. ALI ZAIDI",
+    pageTitleSuffix: "📡 zaidi.fm",
     enableSPA: true,
     enablePopovers: true,
     analytics: {
       provider: "plausible",
     },
     locale: "en-US",
-    baseUrl: "quartz.jzhao.xyz",
+    baseUrl: "zaidi.fm",
     ignorePatterns: ["private", "templates", ".obsidian"],
     defaultDateType: "created",
     generateSocialImages: false,
@@ -24,32 +24,32 @@ const config: QuartzConfig = {
       fontOrigin: "googleFonts",
       cdnCaching: true,
       typography: {
-        header: "Schibsted Grotesk",
-        body: "Source Sans Pro",
-        code: "IBM Plex Mono",
+        header: "Raleway", 
+        body: "Raleway",
+        code: "Jetbrains Mono",
       },
       colors: {
         lightMode: {
-          light: "#faf8f8",
-          lightgray: "#e5e5e5",
-          gray: "#b8b8b8",
-          darkgray: "#4e4e4e",
-          dark: "#2b2b2b",
-          secondary: "#284b63",
-          tertiary: "#84a59d",
-          highlight: "rgba(143, 159, 169, 0.15)",
-          textHighlight: "#fff23688",
+          light: "#faf8f8", //page background
+          lightgray: "#e5e5e5", //borders
+          gray: "#b8b8b8", //graph links, heavier borders
+          darkgray: "#4e4e4e", //body text
+          dark: "#2b2b2b", //header text and icons
+          secondary: "#284b63", //links, curent graph node
+          tertiary: "#84a59d", //hover states and visited graph nodes
+          highlight: "rgba(143, 159, 169, 0.15)", //internal link background, highlighted text, highlighted lines of code
+          textHighlight: "#fff23688", //markdown highlighted text background
         },
         darkMode: {
-          light: "#161618",
-          lightgray: "#393639",
-          gray: "#646464",
-          darkgray: "#d4d4d4",
-          dark: "#ebebec",
-          secondary: "#7b97aa",
-          tertiary: "#84a59d",
-          highlight: "rgba(143, 159, 169, 0.15)",
-          textHighlight: "#b3aa0288",
+          light: "#161618", //page background
+          lightgray: "#393639", //borders
+          gray: "#646464", //graph links, heavier borders
+          darkgray: "#d4d4d4", //body text
+          dark: "#ebebec", //header text and icons
+          secondary: "#7b97aa", //links, curent graph node
+          tertiary: "#84a59d", //hover states and visited graph nodes
+          highlight: "rgba(143, 159, 169, 0.15)", //internal link background, highlighted text, highlighted lines of code
+          textHighlight: "#b3aa0288", //markdown highlighted text background
         },
       },
     },
@@ -57,6 +57,7 @@ const config: QuartzConfig = {
   plugins: {
     transformers: [
       Plugin.FrontMatter(),
+      Plugin.HardLineBreaks(),
       Plugin.CreatedModifiedDate({
         priority: ["frontmatter", "filesystem"],
       }),

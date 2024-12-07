@@ -30,26 +30,26 @@ const defaultOptions: GraphOptions = {
     drag: true,
     zoom: true,
     depth: 1,
-    scale: 1.1,
-    repelForce: 0.5,
-    centerForce: 0.3,
-    linkDistance: 30,
-    fontSize: 0.6,
-    opacityScale: 1,
+    scale: 2,
+    repelForce: 0.4,
+    centerForce: 0.5,
+    linkDistance: 75,
+    fontSize: 1,
+    opacityScale: 1.9,
     showTags: true,
     removeTags: [],
-    focusOnHover: false,
+    focusOnHover: true,
   },
   globalGraph: {
     drag: true,
     zoom: true,
     depth: -1,
-    scale: 0.9,
-    repelForce: 0.5,
-    centerForce: 0.3,
-    linkDistance: 30,
-    fontSize: 0.6,
-    opacityScale: 1,
+    scale: 1,
+    repelForce: 1,
+    centerForce: .7,
+    linkDistance: 100,
+    fontSize: .7,
+    opacityScale: 3,
     showTags: true,
     removeTags: [],
     focusOnHover: true,
@@ -101,6 +101,7 @@ export default ((opts?: GraphOptions) => {
 
   Graph.css = style
   Graph.afterDOMLoaded = script
+  Graph.displayName = "Graph" // Add this line
 
   return Graph
 }) satisfies QuartzComponentConstructor

@@ -9,6 +9,7 @@ import { Root, Element, ElementContent } from "hast"
 import { GlobalConfiguration } from "../cfg"
 import { i18n } from "../i18n"
 
+
 interface RenderComponents {
   head: QuartzComponent
   header: QuartzComponent[]
@@ -65,11 +66,10 @@ export function renderPage(
   components: RenderComponents,
   pageResources: StaticResources,
 ): string {
-  // make a deep copy of the tree so we don't remove the transclusion references
-  // for the file cached in contentMap in build.ts
+  // make a deep copy of the tree
   const root = clone(componentData.tree) as Root
 
-  // process transcludes in componentData
+  // process transcludes
   visit(root, "element", (node, _index, _parent) => {
     if (node.tagName === "blockquote") {
       const classNames = (node.properties?.className ?? []) as string[]
@@ -115,19 +115,15 @@ export function renderPage(
           let startDepth = undefined
           let endIdx = undefined
           for (const [i, el] of page.htmlAst.children.entries()) {
-            // skip non-headers
             if (!(el.type === "element" && el.tagName.match(headerRegex))) continue
             const depth = Number(el.tagName.substring(1))
 
-            // lookin for our blockref
             if (startIdx === undefined || startDepth === undefined) {
-              // skip until we find the blockref that matches
               if (el.properties?.id === blockRef) {
                 startIdx = i
                 startDepth = depth
               }
             } else if (depth <= startDepth) {
-              // looking for new header that is same level or higher
               endIdx = i
               break
             }
@@ -185,7 +181,6 @@ export function renderPage(
     }
   })
 
-  // set componentData.tree to the edited html that has transclusions rendered
   componentData.tree = root
 
   const {
@@ -217,45 +212,57 @@ export function renderPage(
     </div>
   )
 
-  const lang = componentData.fileData.frontmatter?.lang ?? cfg.locale?.split("-")[0] ?? "en"
-  const doc = (
-    <html lang={lang}>
-      <Head {...componentData} />
-      <body data-slug={slug}>
-        <div id="quartz-root" class="page">
-          <Body {...componentData}>
-            {LeftComponent}
-            <div class="center">
-              <div class="page-header">
-                <Header {...componentData}>
-                  {header.map((HeaderComponent) => (
-                    <HeaderComponent {...componentData} />
-                  ))}
-                </Header>
-                <div class="popover-hint">
-                  {beforeBody.map((BodyComponent) => (
-                    <BodyComponent {...componentData} />
-                  ))}
-                </div>
-              </div>
-              <Content {...componentData} />
-              <hr />
-              <div class="page-footer">
-                {afterBody.map((BodyComponent) => (
+// Instead of checking comp !== Component.Graph, we check by displayName
+const hintComponents = beforeBody.filter((comp) => comp.displayName !== "Graph")
+const nonHintComponents = beforeBody.filter((comp) => comp.displayName === "Graph")
+
+const lang = componentData.fileData.frontmatter?.lang ?? cfg.locale?.split("-")[0] ?? "en"
+const doc = (
+  <html lang={lang}>
+    <Head {...componentData} />
+    <body data-slug={slug}>
+      <div id="quartz-root" class="page">
+        <Body {...componentData}>
+          {LeftComponent}
+          <div class="center">
+            <div class="page-header">
+              <Header {...componentData}>
+                {header.map((HeaderComponent) => (
+                  <HeaderComponent {...componentData} />
+                ))}
+              </Header>
+
+              {/* Render the Graph (nonHintComponents) first */}
+              {nonHintComponents.map((BodyComponent) => (
+                <BodyComponent {...componentData} />
+              ))}
+
+              {/* Render the hinted components after the Graph */}
+              <div class="popover-hint">
+                {hintComponents.map((BodyComponent) => (
                   <BodyComponent {...componentData} />
                 ))}
               </div>
             </div>
-            {RightComponent}
-            <Footer {...componentData} />
-          </Body>
-        </div>
-      </body>
-      {pageResources.js
-        .filter((resource) => resource.loadTime === "afterDOMReady")
-        .map((res) => JSResourceToScriptElement(res))}
-    </html>
-  )
+            <Content {...componentData} />
+            <hr />
+            <div class="page-footer">
+              {afterBody.map((BodyComponent) => (
+                <BodyComponent {...componentData} />
+              ))}
+            </div>
+          </div>
+          {RightComponent}
+          <Footer {...componentData} />
+        </Body>
+      </div>
+    </body>
+    {pageResources.js
+      .filter((resource) => resource.loadTime === "afterDOMReady")
+      .map((res) => JSResourceToScriptElement(res))}
+  </html>
+)
 
+return "<!DOCTYPE html>\n" + render(doc)
   return "<!DOCTYPE html>\n" + render(doc)
 }

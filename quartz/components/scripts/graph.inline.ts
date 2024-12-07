@@ -169,7 +169,7 @@ async function renderGraph(container: string, fullSlug: FullSlug) {
     .force("collide", forceCollide<NodeData>((n) => nodeRadius(n)).iterations(3))
 
   const width = graph.offsetWidth
-  const height = Math.max(graph.offsetHeight, 250)
+  const height = Math.max(graph.offsetHeight, 200)
 
   // precompute style prop strings as pixi doesn't support css variables
   const cssVars = [
@@ -277,7 +277,7 @@ async function renderGraph(container: string, fullSlug: FullSlug) {
     const tweenGroup = new TweenGroup()
 
     const defaultScale = 1 / scale
-    const activeScale = defaultScale * 1.1
+    const activeScale = defaultScale * 1.4
     for (const n of nodeRenderData) {
       const nodeId = n.simulationData.id
 
